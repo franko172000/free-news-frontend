@@ -2,10 +2,16 @@ import React from 'react';
 import './styles/app.scss';
 import {RouterProvider} from "react-router-dom";
 import routes from "./routes";
+import {ToastProvider} from "react-toast-notifications";
+import {UserProvider} from "./contexts/userContext";
 
 function App() {
   return (
-    <RouterProvider router={routes} />
+      <ToastProvider>
+          <UserProvider>
+              <RouterProvider router={routes} />
+          </UserProvider>
+      </ToastProvider>
   );
 }
 

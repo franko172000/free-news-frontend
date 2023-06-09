@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Homepage from "pages/Homepage";
 import Login from "pages/Login";
 import AuthLayout from "layouts/AuthLayout";
@@ -7,6 +7,9 @@ import UserLayout from "layouts/UserLayout";
 import Dashboard from "pages/user/Dashboard";
 import Profile from "pages/user/Profile";
 import Preferences from "pages/user/Preferences";
+import store from 'store';
+import {AUTH_STORAGE_KEY, DASHBOARD_ROUTE, LOGIN_ROUTE} from "./constants";
+const storage = store.get(AUTH_STORAGE_KEY);
 
 export default createBrowserRouter ([
     {
@@ -15,7 +18,7 @@ export default createBrowserRouter ([
     },
     {
         path: '/auth/',
-        element: <AuthLayout />,
+        element: !storage ? <AuthLayout /> : <Navigate to={DASHBOARD_ROUTE} />,
         children:[
             {
                 path: 'login',
@@ -29,7 +32,7 @@ export default createBrowserRouter ([
     },
     {
         path: '/user/',
-        element: <UserLayout />,
+        element: storage ? <UserLayout /> : <Navigate to={LOGIN_ROUTE} />,
         children:[
             {
                 path: 'dashboard',

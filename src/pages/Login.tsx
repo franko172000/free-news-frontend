@@ -1,12 +1,44 @@
 import * as Yup from 'yup';
-import {useValidationHook} from "hooks/validationHook";
+import TextField from "components/TextField";
+import Button from "components/Button";
+import {useState} from "react";
+import { yupResolver } from '@hookform/resolvers/yup';
+import {useForm} from "react-hook-form";
+import {login} from "services";
+import {useToast} from "../hooks/useToast";
+import {Link, useNavigate} from "react-router-dom";
+import {DASHBOARD_ROUTE, REGISTER_ROUTE, AUTH_STORAGE_KEY} from "../constants";
+import store from "store";
+
+
 
 export default function Login() {
+    const [loading, setLoading] = useState(false)
     const formValidationSchema = Yup.object().shape({
-        email: Yup.string().required('email is required').email('email is invalid'),
+        email: Yup.string().required('Email is required').email('Email is invalid'),
         password: Yup.string().required('Password is required'),
     });
-    const { register, handleSubmit, reset, formState } = useValidationHook(formValidationSchema);
+    const formOptions = { resolver: yupResolver(formValidationSchema)};
+    const { register, handleSubmit, reset, formState, getValues } = useForm(formOptions);
+    const { errors } = formState;
+    const toast = useToast();
+    //const { register, handleSubmit, reset,
+    // formState, errors } = useValidationHook(formValidationSchema);
+
+    const submitForm = async (data: any)=>{
+        setLoading(true);
+        try{
+            const res = await login(data)
+            window.location.href = DASHBOARD_ROUTE
+            store.set(AUTH_STORAGE_KEY, {
+                token: res.data.data.token
+            })
+            toast('success',"Login successful!");
+        }catch (err: any){
+            toast('error', err?.data?.error?.message);
+        }
+        setLoading(false);
+    }
     return (
         <>
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -22,37 +54,25 @@ export default function Login() {
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
                 <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-                    <form className="space-y-6" action="#" method="POST">
+                    <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit(submitForm)}>
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                                Email address
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
+                            <TextField
+                                title="Email"
+                                name="email"
+                                register={register}
+                                type="email"
+                                error={errors?.email?.message}
+                            />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                                Password
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="current-password"
-                                    required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
+                            <TextField
+                                title="Password"
+                                name="password"
+                                register={register}
+                                type="password"
+                                error={errors?.password?.message}
+                            />
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -76,14 +96,15 @@ export default function Login() {
                         </div>
 
                         <div>
-                            <button
-                                type="submit"
-                                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                                Sign in
-                            </button>
+                            <Button title="Login" type="submit" loading={loading} />
                         </div>
                     </form>
+                    <p className="mt-10 text-center text-sm text-gray-500">
+                        Not a member?{' '}
+                        <Link to={REGISTER_ROUTE} className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                            Sign up here
+                        </Link>
+                    </p>
                 </div>
             </div>
         </>

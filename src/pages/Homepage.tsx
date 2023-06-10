@@ -3,6 +3,7 @@ import Posts from "../components/pages/Posts";
 import {useAppProvider} from "../hooks/useAppProvider";
 import {getNews} from "../services";
 import Header from "../components/pages/Header";
+import moment from 'moment';
 
 const navigation = [
     { name: 'Product', href: '#' },
@@ -22,13 +23,15 @@ export default function Homepage() {
     const handleFilter = (data: {
         type: string,
         value: string
-    }) =>{
+    }) => {
        const filtered = data.value === "all" ? news : news.filter((post:any) => {
            switch (data.type){
                case 'category':
                    return post.category.slug === data.value;
                case 'source':
                    return post.source === data.value
+               case 'date':
+                   return moment(post.created_at).format('YYYY-MM-DD') === data.value
            }
            return post
        })

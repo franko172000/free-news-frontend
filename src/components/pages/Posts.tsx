@@ -3,7 +3,8 @@ import {Link} from "react-router-dom";
 import Button from "../Button";
 import TextField from "../TextField";
 import Select from "../Select";
-import {useEffect, useState} from "react";
+import {useState} from "react";
+import moment from 'moment';
 
 const nyTimesDomain = 'https://www.nytimes.com/';
 interface PostsInterface {
@@ -33,6 +34,7 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
     }
 
     const handleDateFilterChange = (e :any) => {
+        console.log(e.target.value)
         onFilterChange?.(filterData('date', e.target.value))
     }
 
@@ -74,6 +76,7 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
                                 <Button title="Search" type="button" styleNames="w-20 ml-5" onClick={search} />
                             </div>
                         </div>
+                        <p>Filters:</p>
                         <div className="flex justify-between mt-5">
                             <div className="mx-5">
                                 <Select
@@ -89,15 +92,21 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
                                 </Select>
                             </div>
                             <div className="mx-5">
-                                <Select
-                                    name="date"
+                                <TextField
+                                    name="name"
+                                    type="date"
+                                    placeholder="Enter keyword to find news"
                                     onChange={handleDateFilterChange}
-                                    defaultValue=""
-                                >
-                                    <option value="">Filter by date</option>
-                                    <option value="oldest">Oldest</option>
-                                    <option value="newest">Newest</option>
-                                </Select>
+                                />
+                                {/*<Select*/}
+                                {/*    name="date"*/}
+                                {/*    onChange={handleDateFilterChange}*/}
+                                {/*    defaultValue=""*/}
+                                {/*>*/}
+                                {/*    <option value="">Filter by date</option>*/}
+                                {/*    <option value="oldest">Oldest</option>*/}
+                                {/*    <option value="newest">Newest</option>*/}
+                                {/*</Select>*/}
                             </div>
                             <div className="mx-5">
                                 <Select
@@ -138,9 +147,9 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
                                     >
                                     {post.category.name}
                                 </span>
-                                    <span
-                                        className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
-                                    >
+                                <span
+                                    className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
+                                >
                                     {'Source: '+ newsProviders[post.source]}
                                 </span>
                                 </div>
@@ -162,7 +171,7 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
                                                 {post?.author ?? 'Arise News'}
                                             </span>
                                         </p>
-                                        <p className="text-gray-600">{post?.author?.role}</p>
+                                        <p className="text-gray-600">{'Posted: '+ moment(post.created_at).format('ll')}</p>
                                     </div>
                                 </div>
                             </div>

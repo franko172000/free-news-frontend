@@ -1,4 +1,6 @@
 export const AUTH_STORAGE_KEY = 'auth';
+export const APP_NEWS_PROVIDERS = 'providers';
+export const APP_CATEGORIES = 'categories';
 
 //routes
 export const HOME_ROUTE = '/';

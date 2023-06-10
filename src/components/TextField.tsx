@@ -6,6 +6,7 @@ interface FieldProps {
     type: string,
     name: string,
     error?: any,
+    title?: string,
     [x:string]: any;
 }
 const TextField:FC<FieldProps> = ({register, type = "text", name, title, error, ...rest}) => {

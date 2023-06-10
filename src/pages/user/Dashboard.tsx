@@ -1,8 +1,8 @@
 import ContentArea from "components/user/ContentArea";
-import {useAuthUser} from "hooks/useAuthUser";
+import {useAppProvider} from "hooks/useAppProvider";
 
 export default function Dashboard(){
-    const {appUser} = useAuthUser()
+    const {appUser} = useAppProvider()
     return (
         <ContentArea title="Dashboard">
             <div className="my-14">

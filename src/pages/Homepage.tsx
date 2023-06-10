@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { Dialog } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import {useEffect, useState} from 'react'
 import Posts from "../components/pages/Posts";
+import {useAppProvider} from "../hooks/useAppProvider";
+import {getNews} from "../services";
+import Header from "../components/pages/Header";
 
 const navigation = [
     { name: 'Product', href: '#' },
@@ -9,121 +10,45 @@ const navigation = [
     { name: 'Marketplace', href: '#' },
     { name: 'Company', href: '#' },
 ]
-const footerNavigation = {
-    solutions: [
-        { name: 'Marketing', href: '#' },
-        { name: 'Analytics', href: '#' },
-        { name: 'Commerce', href: '#' },
-        { name: 'Insights', href: '#' },
-    ],
-    support: [
-        { name: 'Pricing', href: '#' },
-        { name: 'Documentation', href: '#' },
-        { name: 'Guides', href: '#' },
-        { name: 'API Status', href: '#' },
-    ],
-    company: [
-        { name: 'About', href: '#' },
-        { name: 'Blog', href: '#' },
-        { name: 'Jobs', href: '#' },
-        { name: 'Press', href: '#' },
-        { name: 'Partners', href: '#' },
-    ],
-    legal: [
-        { name: 'Claim', href: '#' },
-        { name: 'Privacy', href: '#' },
-        { name: 'Terms', href: '#' },
-    ],
-}
 
 export default function Homepage() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const {appUser} = useAppProvider()
+    const [news, setNews] = useState([]);
+    const [filteredNews, setFilteredNews] = useState([]);
 
+    useEffect(()=>{
+        fetchNews()
+    },[])
+    const handleFilter = (data: {
+        type: string,
+        value: string
+    }) =>{
+       const filtered = data.value === "all" ? news : news.filter((post:any) => {
+           switch (data.type){
+               case 'category':
+                   return post.category.slug === data.value;
+               case 'source':
+                   return post.source === data.value
+           }
+           return post
+       })
+        setFilteredNews(filtered);
+    }
+    const fetchNews = (searchText?: string) => {
+        const isLoggedIn = !!appUser
+        getNews(searchText, isLoggedIn).then(res=>{
+            const {data} = res.data
+            setNews(data)
+            setFilteredNews(data)
+        })
+    }
+    const handleSearch = (text:string) => {
+        fetchNews(text)
+    }
     return (
         <div className="bg-white">
             {/* Header */}
-            <header className="absolute inset-x-0 top-0 z-50">
-                <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-                    <div className="flex lg:flex-1">
-                        <a href="#" className="-m-1.5 p-1.5">
-                            <span className="sr-only">Your Company</span>
-                            <img
-                                className="h-8 w-auto"
-                                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                alt=""
-                            />
-                        </a>
-                    </div>
-                    <div className="flex lg:hidden">
-                        <button
-                            type="button"
-                            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-400"
-                            onClick={() => setMobileMenuOpen(true)}
-                        >
-                            <span className="sr-only">Open main menu</span>
-                            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-                        </button>
-                    </div>
-                    <div className="hidden lg:flex lg:gap-x-12">
-                        {navigation.map((item) => (
-                            <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-white">
-                                {item.name}
-                            </a>
-                        ))}
-                    </div>
-                    <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                        <a href="#" className="text-sm font-semibold leading-6 text-white">
-                            Log in <span aria-hidden="true">&rarr;</span>
-                        </a>
-                    </div>
-                </nav>
-                <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
-                    <div className="fixed inset-0 z-50" />
-                    <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-                        <div className="flex items-center justify-between">
-                            <a href="#" className="-m-1.5 p-1.5">
-                                <span className="sr-only">Your Company</span>
-                                <img
-                                    className="h-8 w-auto"
-                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                                    alt=""
-                                />
-                            </a>
-                            <button
-                                type="button"
-                                className="-m-2.5 rounded-md p-2.5 text-gray-700"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                <span className="sr-only">Close menu</span>
-                                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                            </button>
-                        </div>
-                        <div className="mt-6 flow-root">
-                            <div className="-my-6 divide-y divide-gray-500/10">
-                                <div className="space-y-2 py-6">
-                                    {navigation.map((item) => (
-                                        <a
-                                            key={item.name}
-                                            href={item.href}
-                                            className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                        >
-                                            {item.name}
-                                        </a>
-                                    ))}
-                                </div>
-                                <div className="py-6">
-                                    <a
-                                        href="#"
-                                        className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                    >
-                                        Log in
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </Dialog.Panel>
-                </Dialog>
-            </header>
+            <Header appUser={appUser} />
 
             <main>
                 {/* Hero section */}
@@ -175,7 +100,11 @@ export default function Homepage() {
 
                 {/* Feature section */}
                 <div className="mt-14 sm:mt-20">
-                    <Posts />
+                    <Posts
+                        posts={filteredNews}
+                        onFilterChange={handleFilter}
+                        onSearchField={handleSearch}
+                    />
                     <div className="relative overflow-hidden pt-16">
                         <div className="mx-auto max-w-7xl px-6 lg:px-8"></div>
                     </div>
@@ -198,47 +127,9 @@ export default function Homepage() {
                         <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
                             <div className="md:grid md:grid-cols-2 md:gap-8">
                                 <div>
-                                    <h3 className="text-sm font-semibold leading-6 text-white">Solutions</h3>
+                                    <h3 className="text-sm font-semibold leading-6 text-white">Categories</h3>
                                     <ul role="list" className="mt-6 space-y-4">
-                                        {footerNavigation.solutions.map((item) => (
-                                            <li key={item.name}>
-                                                <a href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
-                                                    {item.name}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <div className="mt-10 md:mt-0">
-                                    <h3 className="text-sm font-semibold leading-6 text-white">Support</h3>
-                                    <ul role="list" className="mt-6 space-y-4">
-                                        {footerNavigation.support.map((item) => (
-                                            <li key={item.name}>
-                                                <a href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
-                                                    {item.name}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="md:grid md:grid-cols-2 md:gap-8">
-                                <div>
-                                    <h3 className="text-sm font-semibold leading-6 text-white">Company</h3>
-                                    <ul role="list" className="mt-6 space-y-4">
-                                        {footerNavigation.company.map((item) => (
-                                            <li key={item.name}>
-                                                <a href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
-                                                    {item.name}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <div className="mt-10 md:mt-0">
-                                    <h3 className="text-sm font-semibold leading-6 text-white">Legal</h3>
-                                    <ul role="list" className="mt-6 space-y-4">
-                                        {footerNavigation.legal.map((item) => (
+                                        {navigation.map((item) => (
                                             <li key={item.name}>
                                                 <a href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
                                                     {item.name}

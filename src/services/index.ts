@@ -16,3 +16,27 @@ export const register = async (data: RegisterData)=> {
 export const getUser = async ()=> {
     return apiClient.get( 'user/me');
 }
+
+export const updateProfile = async (data: RegisterData)=> {
+    return apiClient.put( 'user/profile', data);
+}
+
+
+export const updatePreference = async ({categories, sources} : {
+    categories?: [],
+    sources?: []
+})=> {
+    return apiClient.put( `user/preference`, {
+        categories,
+        sources
+    });
+}
+export const appSettings = async ()=> {
+    return apiClient.get( 'app-settings');
+}
+
+export const getNews = async (searchText?: string, isUserLoggedIn: boolean = false)=> {
+    return apiClient.get( `${isUserLoggedIn ? 'user/' : ''}news`, {
+        params: {term: searchText}
+    });
+}

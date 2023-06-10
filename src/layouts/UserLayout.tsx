@@ -3,9 +3,9 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import {Outlet} from "react-router";
 import {Link, useNavigate} from "react-router-dom";
 import {AUTH_STORAGE_KEY, DASHBOARD_ROUTE, HOME_ROUTE, PREFERENCE_ROUTE, PROFILE_ROUTE} from "../constants";
-import { Fragment } from 'react'
+import {Fragment, useState} from 'react'
 import {logout} from "../services";
-import {useAuthUser} from "../hooks/useAuthUser";
+import {useAppProvider} from "../hooks/useAppProvider";
 import store from 'store';
 
 const user = {
@@ -22,15 +22,22 @@ function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ')
 }
 export default function UserLayout() {
-    const {setAppUser} = useAuthUser()
-    const navigate = useNavigate()
+    const {setAppUser} = useAppProvider()
+    const [pageNavs, setPageNavs] = useState(navigation);
     const logoutUser = () =>{
         logout()
             .then(()=>{
                 setAppUser(null)
                 store.remove(AUTH_STORAGE_KEY);
+                window.location.href = HOME_ROUTE
             }).catch(err=>console.log(err))
-        navigate(HOME_ROUTE)
+    }
+    const setActive = (nav: any)=>{
+        let navs = pageNavs.map(ele => {
+            ele.current = ele.name === nav.name;
+            return ele;
+        })
+       setPageNavs(navs)
     }
     return (
         <>
@@ -57,10 +64,11 @@ export default function UserLayout() {
 
                                         </div>
                                         <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                                            {navigation.map((item) => (
+                                            {pageNavs.map((item) => (
                                                 <Link
                                                     key={item.name}
                                                     to={item.href}
+                                                    onClick={()=>setActive(item)}
                                                     className={classNames(
                                                         item.current
                                                             ? 'border-indigo-500 text-gray-900'

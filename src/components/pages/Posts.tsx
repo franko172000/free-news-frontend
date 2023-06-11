@@ -5,6 +5,7 @@ import TextField from "../TextField";
 import Select from "../Select";
 import {useState} from "react";
 import moment from 'moment';
+import Pagination from "../Pagination";
 
 const nyTimesDomain = 'https://www.nytimes.com/';
 interface PostsInterface {
@@ -180,6 +181,7 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
                     </article>
                 ))}
             </div>
+            <Pagination />
         </div>
     )
 }

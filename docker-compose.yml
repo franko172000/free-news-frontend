@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+    news-frontend-app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+#        volumes:
+#            - .:/usr/src/app
+#        env_file:
+#            - ./.env.docker
+        #        entrypoint: sh -c "/tmp/run.sh"
+#        networks:
+#            - news-backend
+        ports:
+            - '8081:80'

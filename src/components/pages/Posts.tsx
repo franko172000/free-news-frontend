@@ -14,7 +14,7 @@ interface PostsInterface {
         type: string,
         value: string
     })=>void
-    onSearchField?: (text: string)=>void
+    onSearchField?: (text: string)=>void,
 }
 export default function Posts({posts = [], onFilterChange, onSearchField} : PostsInterface) {
     const {newsProviders, categories} = useAppProvider()
@@ -68,13 +68,15 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
                     <form className="mt-5 sm:flex sm:flex-col items-center">
                         <div className="flex w-1/2 items-center ">
                             <div className="flex w-full ">
-                                <TextField
-                                    name="name"
-                                    type="text"
-                                    placeholder="Enter keyword to find news"
-                                    onChange={handleSearchField}
-                                />
-                                <Button title="Search" type="button" styleNames="w-20 ml-5" onClick={search} />
+                                <div className="w-4/5">
+                                    <TextField
+                                        name="name"
+                                        type="text"
+                                        placeholder="Enter keyword to find news"
+                                        onChange={handleSearchField}
+                                    />
+                                </div>
+                                <Button title="Search" type="button" styleNames="w-2/6 ml-5" onClick={search} />
                             </div>
                         </div>
                         <p>Filters:</p>
@@ -181,7 +183,6 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
                     </article>
                 ))}
             </div>
-            <Pagination />
         </div>
     )
 }

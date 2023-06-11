@@ -35,8 +35,11 @@ export const appSettings = async ()=> {
     return apiClient.get( 'app-settings');
 }
 
-export const getNews = async (searchText?: string, isUserLoggedIn: boolean = false)=> {
+export const getNews = async (params?: {
+    term?: string,
+    page?: number,
+}, isUserLoggedIn: boolean = false)=> {
     return apiClient.get( `${isUserLoggedIn ? 'user/' : ''}news`, {
-        params: {term: searchText}
+        params
     });
 }

@@ -4,6 +4,8 @@ import {useAppProvider} from "../hooks/useAppProvider";
 import {getNews} from "../services";
 import Header from "../components/pages/Header";
 import moment from 'moment';
+import Pagination from "../components/Pagination";
+import PageLoader from "../assets/PageLoader";
 
 const navigation = [
     { name: 'Product', href: '#' },
@@ -15,6 +17,12 @@ const navigation = [
 export default function Homepage() {
     const {appUser} = useAppProvider()
     const [news, setNews] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [newsPageMeta, setNewsPageMeta] = useState({
+        current_page: 1,
+        per_page: 10,
+        total: 0
+    });
     const [filteredNews, setFilteredNews] = useState([]);
 
     useEffect(()=>{
@@ -37,16 +45,24 @@ export default function Homepage() {
        })
         setFilteredNews(filtered);
     }
-    const fetchNews = (searchText?: string) => {
+    const fetchNews = (searchText?: string, page?: number) => {
+        setLoading(true)
         const isLoggedIn = !!appUser
-        getNews(searchText, isLoggedIn).then(res=>{
-            const {data} = res.data
+        getNews({term: searchText, page}, isLoggedIn).then(res=>{
+            const {data, meta} = res.data
             setNews(data)
             setFilteredNews(data)
+            setNewsPageMeta(meta)
+            setLoading(false)
         })
     }
     const handleSearch = (text:string) => {
         fetchNews(text)
+    }
+    const paginate = (page: number)=>{
+        if(page !== newsPageMeta.current_page){
+            fetchNews(undefined, page)
+        }
     }
     return (
         <div className="bg-white">
@@ -108,6 +124,20 @@ export default function Homepage() {
                         onFilterChange={handleFilter}
                         onSearchField={handleSearch}
                     />
+                    <div className="mx-auto max-w-7xl px-6 lg:px-8">
+                        <div className="flex justify-center"><PageLoader show={loading} /></div>
+                        {
+                            newsPageMeta?.total > newsPageMeta?.per_page && (
+                                <Pagination
+                                    currentPage={newsPageMeta?.current_page}
+                                    perPage={newsPageMeta?.per_page}
+                                    total={newsPageMeta?.total}
+                                    onPageChange={paginate}
+                                />
+                            )
+                        }
+
+                    </div>
                     <div className="relative overflow-hidden pt-16">
                         <div className="mx-auto max-w-7xl px-6 lg:px-8"></div>
                     </div>

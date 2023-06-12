@@ -2,7 +2,7 @@ import axios from 'axios'
 import store from 'store';
 import {AUTH_STORAGE_KEY} from "../../constants";
 
-const baseURL = 'http://backend.test/api/';
+const baseURL = 'http://localhost:8070/api/';
 
 const storage = store.get(AUTH_STORAGE_KEY)
 

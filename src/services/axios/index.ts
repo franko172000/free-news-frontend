@@ -4,8 +4,6 @@ import {AUTH_STORAGE_KEY} from "../../constants";
 
 const baseURL = 'http://localhost:8070/api/';
 
-console.log(process.env.API_BASE_URL)
-
 const storage = store.get(AUTH_STORAGE_KEY)
 
 const apiClient = axios.create({

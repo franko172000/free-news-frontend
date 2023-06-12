@@ -3,6 +3,7 @@ import {useMemo, useState} from "react";
 import {classNames} from "../helper";
 interface PaginationInterface {
     total: number,
+    totalResults?: number,
     perPage?: number,
     currentPage: number,
     onPageChange?: (page: number)=>void,
@@ -39,7 +40,7 @@ export default function Pagination({total, perPage, onPageChange, currentPage} :
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
                     <p className="text-sm text-gray-700">
-                        Showing <span className="font-medium">1</span> of <span className="font-medium">{total+ ' '}</span>results {' '}
+                        Showing page <span className="font-medium">{currentPage}</span> of <span className="font-medium">{total+ ' '}</span>results {' '}
                     </p>
                 </div>
                 <div>

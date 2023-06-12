@@ -12,7 +12,7 @@ interface FieldProps {
 const TextField:FC<FieldProps> = ({register, type = "text", name, title, error, ...rest}) => {
     const validations = register ? register(name) : {}
     return (
-        <div className="mb-2 w-full">
+        <div className="flex flex-col mb-2 w-full">
             <label htmlFor={name}
                    className="block text-sm font-medium leading-6 text-gray-900">{title}</label>
             <input type={type}

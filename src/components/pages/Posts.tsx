@@ -66,9 +66,9 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
             <div className="bg-white shadow mt-16 sm:rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
                     <form className="mt-5 sm:flex sm:flex-col items-center">
-                        <div className="flex w-1/2 items-center ">
-                            <div className="flex w-full ">
-                                <div className="w-4/5">
+                        <div className="flex sm:w-1/2 w-full items-center ">
+                            <div className="flex flex-col sm:flex-row w-full ">
+                                <div className="sm:w-4/5 w-full">
                                     <TextField
                                         name="name"
                                         type="text"
@@ -76,12 +76,12 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
                                         onChange={handleSearchField}
                                     />
                                 </div>
-                                <Button title="Search" type="button" styleNames="w-2/6 ml-5" onClick={search} />
+                                <Button title="Search" type="button" styleNames="sm:w-2/6 w-full ml-0 sm:ml-5" onClick={search} />
                             </div>
                         </div>
-                        <p>Filters:</p>
-                        <div className="flex justify-between mt-5">
-                            <div className="mx-5">
+                        <p className="my-5 sm:mx-0">Filters:</p>
+                        <div className="flex flex-col sm:flex-row justify-start sm:justify-between mt-5">
+                            <div className="mx-0 sm:mx-5">
                                 <Select
                                     name="categories"
                                     onChange={handleCategoryChange}
@@ -94,24 +94,15 @@ export default function Posts({posts = [], onFilterChange, onSearchField} : Post
                                     ))}
                                 </Select>
                             </div>
-                            <div className="mx-5">
+                            <div className="mx-0 sm:mx-5">
                                 <TextField
                                     name="name"
                                     type="date"
                                     placeholder="Enter keyword to find news"
                                     onChange={handleDateFilterChange}
                                 />
-                                {/*<Select*/}
-                                {/*    name="date"*/}
-                                {/*    onChange={handleDateFilterChange}*/}
-                                {/*    defaultValue=""*/}
-                                {/*>*/}
-                                {/*    <option value="">Filter by date</option>*/}
-                                {/*    <option value="oldest">Oldest</option>*/}
-                                {/*    <option value="newest">Newest</option>*/}
-                                {/*</Select>*/}
                             </div>
-                            <div className="mx-5">
+                            <div className="mx-0 sm:mx-5">
                                 <Select
                                     name="source"
                                     onChange={handleSourceChange}

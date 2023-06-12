@@ -21,7 +21,7 @@ In the project directory, run:
     npm start
 ```
 
-#### Note: Make sure the backend is up and running first. Here is the link to the backend repo - https://github.com/franko172000/free-news-frontend
+#### Note: Make sure the backend is up and running first. Here is the link to the backend repo - https://github.com/franko172000/free-news-backend
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
